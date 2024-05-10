@@ -60,7 +60,7 @@
 	<div>
 		<div class="container body-content">
 			<h2>Customer Registry</h2>
-			<asp:DropDownList runat="server" ID="CustomersDDL" CssClass="form-control"/>
+			<asp:DropDownList runat="server" ID="CustomersDDL" OnSelectedIndexChanged="CustomersDDL_SelectedIndexChanged" AutoPostBack="true" CssClass="form-control"/>
 		</div>
 
 		<div class="container body-content">
@@ -98,6 +98,11 @@
 							</div>
 
 							<div class="form-group">
+								<asp:Label ID="CustomerCountryLabel" runat="server" Text="Country" CssClass="form-label"></asp:Label>
+								<asp:DropDownList ID="CountryDropDownList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="CountryDropDownList_SelectedIndexChanged" CssClass="form-control"/>
+							</div>
+
+							<div class="form-group">
 								<asp:Label ID="CustomerStateLabel" runat="server" Text="Province/State" CssClass="form-label"></asp:Label>
 								<asp:DropDownList ID="StateDropDownList" runat="server" CssClass="form-control"/>
 							</div>
@@ -105,11 +110,6 @@
 							<div class="form-group">
 								<asp:Label ID="CustomerZipLabel" runat="server" Text="Postal/Zip Code" CssClass="form-label"></asp:Label>
 								<asp:TextBox ID="CustomerZip" runat="server" CssClass="form-control"></asp:TextBox>
-							</div>
-
-							<div class="form-group">
-								<asp:Label ID="CustomerCountryLabel" runat="server" Text="Country" CssClass="form-label"></asp:Label>
-								<asp:DropDownList ID="CountryDropDownList" runat="server" CssClass="form-control"/>
 							</div>
 
 							<div class="form-group">
@@ -136,6 +136,8 @@
 
 							<div class="form-group">
 								<asp:Button ID="AddButton" class="btn btn-primary btn-md" runat="server" Text="Add" OnClick="AddButton_Click" />
+								<asp:Button ID="UpdateButton" class="btn btn-primary btn-md" runat="server" Text="Update" OnClick="UpdateButton_Click" />
+								<asp:Button ID="DeleteButton" class="btn btn-primary btn-md" runat="server" Text="Delete" OnClick="DeleteButton_Click" />
 							</div>
 						</div>
 					</div>

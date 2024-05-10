@@ -31,7 +31,15 @@ namespace assessment_platform_developer.Repositories
 
 		public void Add(Customer customer)
 		{
-			customers.Add(customer);
+			if (customers.Count() > 0)
+			{
+                customer.ID = customers.Max(c => c.ID) + 1;
+            }
+			else
+			{
+				customer.ID = 1;
+			}
+            customers.Add(customer);
 		}
 
 		public void Update(Customer customer)
