@@ -12,6 +12,7 @@ using System.Web.UI;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using assessment_platform_developer.Services;
 using SimpleInjector.Integration.Web;
+using assessment_platform_developer.Utils;
 
 namespace assessment_platform_developer
 {
@@ -74,6 +75,7 @@ namespace assessment_platform_developer
 			container.Options.DefaultScopedLifestyle = new WebRequestLifestyle();
 
 			// 2. Configure the container (register)
+			container.Register<IAddressValidator, AddressValidator>(Lifestyle.Singleton);
 			container.Register<ICustomerRepository, CustomerRepository>(Lifestyle.Singleton);
 			container.Register<ICustomerService, CustomerService>(Lifestyle.Scoped);
 

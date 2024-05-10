@@ -177,6 +177,15 @@ namespace assessment_platform_developer
         protected global::System.Web.UI.WebControls.TextBox CustomerZip;
 
         /// <summary>
+        /// CustomerZipValidator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator CustomerZipValidator;
+
+        /// <summary>
         /// CustomerNotesLabel control.
         /// </summary>
         /// <remarks>

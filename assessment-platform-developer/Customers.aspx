@@ -109,7 +109,9 @@
 
 							<div class="form-group">
 								<asp:Label ID="CustomerZipLabel" runat="server" Text="Postal/Zip Code" CssClass="form-label"></asp:Label>
-								<asp:TextBox ID="CustomerZip" runat="server" CssClass="form-control"></asp:TextBox>
+								<asp:TextBox ID="CustomerZip" runat="server" CssClass="form-control" CausesValidation="true"></asp:TextBox>
+								<asp:CustomValidator ID="CustomerZipValidator" runat="server"  OnServerValidate="CustomerZipValidator_ServerValidate" 
+									ControlToValidate="CustomerZip" ErrorMessage="Please enter a valid zip code!" SetFocusOnError="true" ForeColor="Red"></asp:CustomValidator>
 							</div>
 
 							<div class="form-group">

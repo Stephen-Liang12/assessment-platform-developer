@@ -104,23 +104,57 @@ namespace assessment_platform_developer.Models
 	{
 		public int ID { get; set; }
 		public string Name { get; set; }
-		public string Address { get; set; }
-		public string Email { get; set; }
-		public string Phone { get; set; }
-		public string City { get; set; }
-		public string State { get; set; }
-		public string Zip { get; set; }
-		public string Country { get; set; }
-		public string Notes { get; set; }
-		public string ContactName { get; set; }
-		public string ContactPhone { get; set; }
-		public string ContactEmail { get; set; }
-		public string ContactTitle { get; set; }
-		public string ContactNotes { get; set; }
-
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string Notes { get; set; }
+		public IAddressInformation AddressInformation { get; set; }
+		public ContactInformation ContactInformation { get; set; }
 	}
 
-	public class CustomerDBContext : DbContext
+    [Serializable]
+    public class ContactInformation
+    {
+        public string ContactName { get; set; }
+        public string ContactPhone { get; set; }
+        public string ContactEmail { get; set; }
+        public string ContactTitle { get; set; }
+        public string ContactNotes { get; set; }
+    }
+
+	public interface IAddressInformation
+	{
+        string Address { get; set; }
+        string City { get; set; }
+        string State { get; set; }
+        string Zip { get; set; }
+        string Country { get; set; }
+    }
+
+    [Serializable]
+    public class CanadianAddress : IAddressInformation
+    {
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
+        public string Country { get; set; }
+        public Countries CountryEnum { get; set; }
+		public CanadianProvinces CanadianProvince { get; set; }
+    }
+
+    [Serializable]
+    public class USAddress : IAddressInformation
+    {
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
+        public string Country { get; set; }
+        public Countries CountryEnum { get; set; }
+        public USStates USState { get; set; }
+    }
+
+    public class CustomerDBContext : DbContext
 	{
 		public DbSet<Customer> Customers { get; set; }
 	}

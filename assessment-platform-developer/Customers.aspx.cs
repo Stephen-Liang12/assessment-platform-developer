@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using assessment_platform_developer.Services;
+using assessment_platform_developer.Utils;
 using Container = SimpleInjector.Container;
 
 namespace assessment_platform_developer
@@ -85,20 +86,24 @@ namespace assessment_platform_developer
 
         protected void AddButton_Click(object sender, EventArgs e)
         {
+            if (!IsValid)
+            {
+                return;
+            }
+
             var customer = new Customer
             {
                 Name = CustomerName.Text,
-                Address = CustomerAddress.Text,
-                City = CustomerCity.Text,
-                State = StateDropDownList.SelectedItem.Text,
-                Zip = CustomerZip.Text,
-                Country = CountryDropDownList.SelectedItem.Text,
+                AddressInformation = AddressFactory.CreateAddressInformation(CustomerAddress.Text, CustomerCity.Text, int.Parse(StateDropDownList.SelectedValue), CustomerZip.Text, (Countries)int.Parse(CountryDropDownList.SelectedValue)),
                 Email = CustomerEmail.Text,
                 Phone = CustomerPhone.Text,
                 Notes = CustomerNotes.Text,
-                ContactName = ContactName.Text,
-                ContactPhone = CustomerPhone.Text,
-                ContactEmail = CustomerEmail.Text
+                ContactInformation = new ContactInformation
+                {
+                    ContactName = ContactName.Text,
+                    ContactPhone = ContactPhone.Text,
+                    ContactEmail = ContactEmail.Text
+                }
             };
 
             var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
@@ -118,9 +123,10 @@ namespace assessment_platform_developer
             CustomerEmail.Text = string.Empty;
             CustomerPhone.Text = string.Empty;
             CustomerCity.Text = string.Empty;
+            CountryDropDownList.SelectedIndex = 0;
+            CountryDropDownList_SelectedIndexChanged(this, EventArgs.Empty);
             StateDropDownList.SelectedIndex = 0;
             CustomerZip.Text = string.Empty;
-            CountryDropDownList.SelectedIndex = 0;
             CustomerNotes.Text = string.Empty;
             ContactName.Text = string.Empty;
             ContactPhone.Text = string.Empty;
@@ -144,18 +150,18 @@ namespace assessment_platform_developer
                     var customerService = container.GetInstance<ICustomerService>();
 					var selectedCustomer = customerService.GetCustomer(int.Parse(selectedItem.Value));
                     CustomerName.Text = selectedCustomer.Name;
-                    CustomerAddress.Text = selectedCustomer.Address;
+                    CustomerAddress.Text = selectedCustomer.AddressInformation.Address;
                     CustomerEmail.Text = selectedCustomer.Email;
                     CustomerPhone.Text = selectedCustomer.Phone;
-                    CustomerCity.Text = selectedCustomer.City;
-                    CountryDropDownList.SelectedIndex = CountryDropDownList.Items.IndexOf(CountryDropDownList.Items.FindByText(selectedCustomer.Country));
+                    CustomerCity.Text = selectedCustomer.AddressInformation.City;
+                    CountryDropDownList.SelectedIndex = CountryDropDownList.Items.IndexOf(CountryDropDownList.Items.FindByText(selectedCustomer.AddressInformation.Country));
                     CountryDropDownList_SelectedIndexChanged(this, null); 
-                    StateDropDownList.SelectedIndex = StateDropDownList.Items.IndexOf(StateDropDownList.Items.FindByText(selectedCustomer.State));
-                    CustomerZip.Text = selectedCustomer.Zip;
+                    StateDropDownList.SelectedIndex = StateDropDownList.Items.IndexOf(StateDropDownList.Items.FindByText(selectedCustomer.AddressInformation.State));
+                    CustomerZip.Text = selectedCustomer.AddressInformation.Zip;
                     CustomerNotes.Text = selectedCustomer.Notes;
-                    ContactName.Text = selectedCustomer.ContactName;
-                    ContactPhone.Text = selectedCustomer.ContactPhone;
-                    ContactEmail.Text = selectedCustomer.ContactEmail;
+                    ContactName.Text = selectedCustomer.ContactInformation.ContactName;
+                    ContactPhone.Text = selectedCustomer.ContactInformation.ContactPhone;
+                    ContactEmail.Text = selectedCustomer.ContactInformation.ContactEmail;
 
                     AddButton.Visible = false;
                     UpdateButton.Visible = true;
@@ -173,18 +179,17 @@ namespace assessment_platform_developer
 				{
 					ID = int.Parse(selectedItem.Value),
                     Name = CustomerName.Text,
-					Address = CustomerAddress.Text,
-					City = CustomerCity.Text,
-					State = StateDropDownList.SelectedValue,
-					Zip = CustomerZip.Text,
-					Country = CountryDropDownList.SelectedValue,
-					Email = CustomerEmail.Text,
-					Phone = CustomerPhone.Text,
-					Notes = CustomerNotes.Text,
-					ContactName = ContactName.Text,
-					ContactPhone = CustomerPhone.Text,
-					ContactEmail = CustomerEmail.Text
-				};
+                    AddressInformation = AddressFactory.CreateAddressInformation(CustomerAddress.Text, CustomerCity.Text, int.Parse(StateDropDownList.SelectedValue), CustomerZip.Text, (Countries)int.Parse(CountryDropDownList.SelectedValue)),
+                    Email = CustomerEmail.Text,
+                    Phone = CustomerPhone.Text,
+                    Notes = CustomerNotes.Text,
+                    ContactInformation = new ContactInformation
+                    {
+                        ContactName = ContactName.Text,
+                        ContactPhone = ContactPhone.Text,
+                        ContactEmail = ContactEmail.Text
+                    }
+                };
 
 				var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
 				var customerService = testContainer.GetInstance<ICustomerService>();
@@ -239,6 +244,15 @@ namespace assessment_platform_developer
             {
                 StateDropDownList.Items.Clear();
             }
+        }
+
+        protected void CustomerZipValidator_ServerValidate(object sender, ServerValidateEventArgs e)
+        {
+            var addressInformation = AddressFactory.CreateAddressInformation(CustomerAddress.Text, CustomerCity.Text, int.Parse(StateDropDownList.SelectedValue), CustomerZip.Text, (Countries)int.Parse(CountryDropDownList.SelectedValue));
+            var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
+            var addressValidator = testContainer.GetInstance<IAddressValidator>();
+            var result = addressValidator.ValidateAddress(addressInformation);
+            e.IsValid = result.Item1;
         }
     }
 }
