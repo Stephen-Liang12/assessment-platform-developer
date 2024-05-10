@@ -76,8 +76,10 @@ namespace assessment_platform_developer
 
 			// 2. Configure the container (register)
 			container.Register<IAddressValidator, AddressValidator>(Lifestyle.Singleton);
-			container.Register<ICustomerRepository, CustomerRepository>(Lifestyle.Singleton);
-			container.Register<ICustomerService, CustomerService>(Lifestyle.Scoped);
+			container.Register<ICustomerQueryRepository, CustomerRepository>(Lifestyle.Singleton);
+			container.Register<ICustomerCommandRepository, CustomerRepository>(Lifestyle.Singleton);
+			container.Register<ICustomerCommandService, CustomerCommandService>(Lifestyle.Scoped);
+			container.Register<ICustomerQueryService, CustomerQueryService>(Lifestyle.Scoped);
 
 			// Register your Page classes to allow them to be verified and diagnosed.
 			RegisterWebPages(container);

@@ -21,9 +21,9 @@ namespace assessment_platform_developer
 			if (!IsPostBack)
 			{
 				var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
-				var customerService = testContainer.GetInstance<ICustomerService>();
+				var customerQueryService = testContainer.GetInstance<ICustomerQueryService>();
 
-				var allCustomers = customerService.GetAllCustomers();
+				var allCustomers = customerQueryService.GetAllCustomers();
 				ViewState["Customers"] = allCustomers;
                 PopulateCustomerListBox();
                 PopulateCustomerDropDownLists();
@@ -107,8 +107,8 @@ namespace assessment_platform_developer
             };
 
             var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
-            var customerService = testContainer.GetInstance<ICustomerService>();
-            customerService.AddCustomer(customer);
+            var customerCommandService = testContainer.GetInstance<ICustomerCommandService>();
+            customerCommandService.AddCustomer(customer);
             customers.Add(customer);
 
             CustomersDDL.Items.Add(new ListItem(customer.Name, customer.ID.ToString()));
@@ -147,8 +147,8 @@ namespace assessment_platform_developer
 				else
 				{
                     var container = (Container)HttpContext.Current.Application["DIContainer"];
-                    var customerService = container.GetInstance<ICustomerService>();
-					var selectedCustomer = customerService.GetCustomer(int.Parse(selectedItem.Value));
+                    var customerQueryService = container.GetInstance<ICustomerQueryService>();
+					var selectedCustomer = customerQueryService.GetCustomer(int.Parse(selectedItem.Value));
                     CustomerName.Text = selectedCustomer.Name;
                     CustomerAddress.Text = selectedCustomer.AddressInformation.Address;
                     CustomerEmail.Text = selectedCustomer.Email;
@@ -192,8 +192,8 @@ namespace assessment_platform_developer
                 };
 
 				var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
-				var customerService = testContainer.GetInstance<ICustomerService>();
-				customerService.UpdateCustomer(customer);
+				var customerCommandService = testContainer.GetInstance<ICustomerCommandService>();
+				customerCommandService.UpdateCustomer(customer);
 				customers.Remove(customers.First(c => c.ID == customer.ID));
 				customers.Add(customer);
 
@@ -219,9 +219,9 @@ namespace assessment_platform_developer
 			if (selectedItem != null)
 			{
 				var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
-				var customerService = testContainer.GetInstance<ICustomerService>();
+				var customerCommandService = testContainer.GetInstance<ICustomerCommandService>();
                 int id = int.Parse(selectedItem.Value);
-                customerService.DeleteCustomer(id);
+                customerCommandService.DeleteCustomer(id);
                 customers.Remove(customers.First(c => c.ID == id));
 				PopulateCustomerListBox();
 

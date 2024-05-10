@@ -14,7 +14,7 @@ namespace assessment_platform_developer.Repositories
 		void Delete(int id);
 	}
 
-	public class CustomerRepository : ICustomerRepository
+	public class CustomerRepository : ICustomerRepository, ICustomerCommandRepository, ICustomerQueryRepository
 	{
 		// Assuming you have a DbContext named 'context'
 		private readonly List<Customer> customers = new List<Customer>();
